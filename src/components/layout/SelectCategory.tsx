@@ -22,7 +22,7 @@ export function SelectCategoryComponent({
       setSelectedKey(categories[0].id);
       onSelectCategory(categories[0]);
     }
-  }, [categories]);
+  }, [categories, onSelectCategory]);
 
   const selectCategory = (value: Key | null) => {
     if (!value) return;

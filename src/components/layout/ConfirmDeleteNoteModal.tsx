@@ -48,14 +48,14 @@ export function ConfirmDeleteNoteModal({
           <Button
             type="button"
             onPress={() => closeModal()}
-            className="px-5 py-2 rounded-lg"
+            className="px-5 py-2 rounded-lg hover:cursor-pointer"
           >
             Cancel
           </Button>
 
           <Button
             type="submit"
-            className="px-5 py-2 rounded-lg"
+            className="px-5 py-2 rounded-lg hover:cursor-pointer"
             onPress={() => deleteNote()}
           >
             OK

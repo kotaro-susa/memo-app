@@ -1,35 +1,47 @@
-"use client"
+"use client";
 
-import { useState } from "react"
+import { useState } from "react";
 
-import type { FieldProps } from "@/components/ui/field"
-import { Description, FieldError, FieldGroup, Input, Label } from "@/components/ui/field"
-import { Loader } from "@/components/ui/loader"
-import { composeTailwindRenderProps } from "@/lib/primitive"
-import { IconEye, IconEyeClosed } from "@intentui/icons"
-import { Button as ButtonPrimitive, TextField as TextFieldPrimitive } from "react-aria-components"
-import type { InputProps, TextFieldProps as TextFieldPrimitiveProps } from "react-aria-components"
+import type { FieldProps } from "@/components/ui/field";
+import {
+  Description,
+  FieldError,
+  FieldGroup,
+  Input,
+  Label,
+} from "@/components/ui/field";
+import { Loader } from "@/components/ui/loader";
+import { composeTailwindRenderProps } from "@/lib/primitive";
+import { IconEye, IconEyeClosed } from "@intentui/icons";
+import {
+  Button as ButtonPrimitive,
+  TextField as TextFieldPrimitive,
+} from "react-aria-components";
+import type {
+  InputProps,
+  TextFieldProps as TextFieldPrimitiveProps,
+} from "react-aria-components";
 
-type InputType = Exclude<InputProps["type"], "password">
+type InputType = Exclude<InputProps["type"], "password">;
 
 interface BaseTextFieldProps extends TextFieldPrimitiveProps, FieldProps {
-  prefix?: React.ReactNode
-  suffix?: React.ReactNode
-  isPending?: boolean
-  className?: string
+  prefix?: React.ReactNode;
+  suffix?: React.ReactNode;
+  isPending?: boolean;
+  className?: string;
 }
 
 interface RevealableTextFieldProps extends BaseTextFieldProps {
-  isRevealable: true
-  type: "password"
+  isRevealable: true;
+  type: "password";
 }
 
 interface NonRevealableTextFieldProps extends BaseTextFieldProps {
-  isRevealable?: never
-  type?: InputType
+  isRevealable?: never;
+  type?: InputType;
 }
 
-type TextFieldProps = RevealableTextFieldProps | NonRevealableTextFieldProps
+type TextFieldProps = RevealableTextFieldProps | NonRevealableTextFieldProps;
 
 const TextField = ({
   placeholder,
@@ -44,16 +56,23 @@ const TextField = ({
   type,
   ...props
 }: TextFieldProps) => {
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false)
-  const inputType = isRevealable ? (isPasswordVisible ? "text" : "password") : type
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const inputType = isRevealable
+    ? isPasswordVisible
+      ? "text"
+      : "password"
+    : type;
   const handleTogglePasswordVisibility = () => {
-    setIsPasswordVisible((prev) => !prev)
-  }
+    setIsPasswordVisible((prev) => !prev);
+  };
   return (
     <TextFieldPrimitive
       type={inputType}
       {...props}
-      className={composeTailwindRenderProps(className, "group flex flex-col gap-y-1")}
+      className={composeTailwindRenderProps(
+        className,
+        "group flex flex-col gap-y-1",
+      )}
     >
       {!props.children ? (
         <>
@@ -95,8 +114,8 @@ const TextField = ({
         props.children
       )}
     </TextFieldPrimitive>
-  )
-}
+  );
+};
 
-export type { TextFieldProps }
-export { TextField }
+export type { TextFieldProps };
+export { TextField };

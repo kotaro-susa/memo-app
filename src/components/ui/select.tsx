@@ -62,7 +62,7 @@ const Select = <T extends object>({
       {...props}
       className={composeTailwindRenderProps(
         className,
-        "group flex w-full flex-col gap-y-1.5"
+        "group flex w-full flex-col gap-y-1.5",
       )}
     >
       {(values) => (
@@ -105,7 +105,7 @@ const SelectList = <T extends object>({
         orientation="vertical"
         className={composeTailwindRenderProps(
           className,
-          "max-h-[inherit] min-w-[inherit] border-0 shadow-none"
+          "max-h-[inherit] min-w-[inherit] border-0 shadow-none",
         )}
         items={items}
         {...props}
@@ -128,7 +128,7 @@ const SelectTrigger = ({ className, ...props }: SelectTriggerProps) => {
         selectTriggerStyles({
           ...renderProps,
           className,
-        })
+        }),
       )}
     >
       {props.prefix && <span className="-mr-1">{props.prefix}</span>}

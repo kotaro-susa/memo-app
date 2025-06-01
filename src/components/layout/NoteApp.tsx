@@ -5,6 +5,7 @@ import NoteList from "./NoteList";
 import NoteDetail from "./NoteDetail";
 import { Category, Note } from "@/lib/type";
 import { v4 as uuidv4 } from "uuid";
+import userStore from "@/store/userStore";
 
 const category = [
   { id: "1", name: "Adobe Photoshop" },
@@ -21,6 +22,7 @@ export default function NoteApp() {
   const [isDetailView, setIsDetailView] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<Category>();
+  const { user } = userStore();
 
   useEffect(() => {
     const savedNotes = localStorage.getItem("notes");
@@ -36,23 +38,30 @@ export default function NoteApp() {
   }, []);
 
   useEffect(() => {
+    // API通信を行い、保存する
     localStorage.setItem("notes", JSON.stringify(notes));
   }, [notes]);
 
   useEffect(() => {
     if (!selectedCategory) return;
     const target = notes.filter(
-      (note) => note.category.id === selectedCategory.id
+      (note) => note.category.id === selectedCategory.id,
     );
     setActiveCategoryNotes(target);
   }, [selectedCategory, notes]);
 
   const handleCreateNote = () => {
+    if (!user?.sub || !selectedCategory) {
+      console.error("ユーザー情報またはカテゴリがありません");
+      return;
+    }
+
     const newNote: Note = {
       id: uuidv4(),
+      userId: user.sub,
       title: "New Note",
       content: "",
-      category: { id: selectedCategory!.id, name: selectedCategory!.name },
+      category: { id: selectedCategory.id, name: selectedCategory.name },
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
@@ -72,8 +81,8 @@ export default function NoteApp() {
       prevNotes.map((note) =>
         note.id === updatedNote.id
           ? { ...updatedNote, updatedAt: new Date().toISOString() }
-          : note
-      )
+          : note,
+      ),
     );
   };
 

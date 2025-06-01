@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import type {
   FieldErrorProps as FieldErrorPrimitiveProps,
@@ -8,7 +8,7 @@ import type {
   TextFieldProps as TextFieldPrimitiveProps,
   TextProps,
   ValidationResult,
-} from "react-aria-components"
+} from "react-aria-components";
 import {
   FieldError as FieldErrorPrimitive,
   Group,
@@ -16,18 +16,18 @@ import {
   Label as LabelPrimitive,
   Text,
   composeRenderProps,
-} from "react-aria-components"
-import { tv } from "tailwind-variants"
+} from "react-aria-components";
+import { tv } from "tailwind-variants";
 
-import { composeTailwindRenderProps, focusStyles } from "@/lib/primitive"
+import { composeTailwindRenderProps, focusStyles } from "@/lib/primitive";
 
 interface FieldProps {
-  label?: string
-  placeholder?: string
-  description?: string
-  errorMessage?: string | ((validation: ValidationResult) => string)
-  "aria-label"?: TextFieldPrimitiveProps["aria-label"]
-  "aria-labelledby"?: TextFieldPrimitiveProps["aria-labelledby"]
+  label?: string;
+  placeholder?: string;
+  description?: string;
+  errorMessage?: string | ((validation: ValidationResult) => string);
+  "aria-label"?: TextFieldPrimitiveProps["aria-label"];
+  "aria-labelledby"?: TextFieldPrimitiveProps["aria-labelledby"];
 }
 
 const fieldStyles = tv({
@@ -36,33 +36,35 @@ const fieldStyles = tv({
     label: "w-fit cursor-default font-medium text-secondary-fg text-sm/6",
     fieldError: "text-danger text-sm/6 forced-colors:text-[Mark]",
   },
-})
+});
 
-const { description, label, fieldError } = fieldStyles()
+const { description, label, fieldError } = fieldStyles();
 
 const Label = ({ className, ...props }: LabelProps) => {
-  return <LabelPrimitive {...props} className={label({ className })} />
-}
+  return <LabelPrimitive {...props} className={label({ className })} />;
+};
 
 interface DescriptionProps extends TextProps {
-  isWarning?: boolean
-  ref?: React.RefObject<HTMLElement>
+  isWarning?: boolean;
+  ref?: React.RefObject<HTMLElement>;
 }
 
 const Description = ({ ref, className, ...props }: DescriptionProps) => {
-  const isWarning = props.isWarning ?? false
+  const isWarning = props.isWarning ?? false;
   return (
     <Text
       ref={ref}
       {...props}
       slot="description"
-      className={description({ className: isWarning ? "text-warning" : className })}
+      className={description({
+        className: isWarning ? "text-warning" : className,
+      })}
     />
-  )
-}
+  );
+};
 
 interface FieldErrorProps extends FieldErrorPrimitiveProps {
-  ref?: React.RefObject<HTMLElement>
+  ref?: React.RefObject<HTMLElement>;
 }
 const FieldError = ({ className, ref, ...props }: FieldErrorProps) => {
   return (
@@ -71,8 +73,8 @@ const FieldError = ({ className, ref, ...props }: FieldErrorProps) => {
       {...props}
       className={composeTailwindRenderProps(className, fieldError())}
     />
-  )
-}
+  );
+};
 
 const fieldGroupStyles = tv({
   base: [
@@ -97,10 +99,10 @@ const fieldGroupStyles = tv({
       true: "opacity-50 forced-colors:border-[GrayText]",
     },
   },
-})
+});
 
 interface FieldGroupProps extends GroupProps {
-  ref?: React.RefObject<HTMLDivElement>
+  ref?: React.RefObject<HTMLDivElement>;
 }
 const FieldGroup = ({ className, ref, ...props }: FieldGroupProps) => {
   return (
@@ -114,11 +116,11 @@ const FieldGroup = ({ className, ref, ...props }: FieldGroupProps) => {
         }),
       )}
     />
-  )
-}
+  );
+};
 
 interface InputProps extends InputPrimitiveProps {
-  ref?: React.RefObject<HTMLInputElement>
+  ref?: React.RefObject<HTMLInputElement>;
 }
 
 const Input = ({ className, ref, ...props }: InputProps) => {
@@ -131,8 +133,8 @@ const Input = ({ className, ref, ...props }: InputProps) => {
         "w-full min-w-0 bg-transparent px-(--gutter-x) py-2 text-base text-fg placeholder-muted-fg outline-hidden focus:outline-hidden sm:text-sm/6 [&::-ms-reveal]:hidden [&::-webkit-search-cancel-button]:hidden",
       )}
     />
-  )
-}
+  );
+};
 
-export type { FieldProps, InputProps, DescriptionProps, FieldErrorProps }
-export { Description, FieldError, FieldGroup, Input, Label, fieldStyles }
+export type { FieldProps, InputProps, DescriptionProps, FieldErrorProps };
+export { Description, FieldError, FieldGroup, Input, Label, fieldStyles };

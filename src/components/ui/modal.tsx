@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   Dialog,
@@ -10,19 +10,23 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import type { DialogProps, DialogTriggerProps, ModalOverlayProps } from "react-aria-components"
+} from "@/components/ui/dialog";
+import type {
+  DialogProps,
+  DialogTriggerProps,
+  ModalOverlayProps,
+} from "react-aria-components";
 import {
   DialogTrigger as DialogTriggerPrimitive,
   ModalOverlay,
   Modal as ModalPrimitive,
   composeRenderProps,
-} from "react-aria-components"
-import { type VariantProps, tv } from "tailwind-variants"
+} from "react-aria-components";
+import { type VariantProps, tv } from "tailwind-variants";
 
 const Modal = (props: DialogTriggerProps) => {
-  return <DialogTriggerPrimitive {...props} />
-}
+  return <DialogTriggerPrimitive {...props} />;
+};
 
 const modalOverlayStyles = tv({
   base: [
@@ -41,7 +45,7 @@ const modalOverlayStyles = tv({
       true: "fade-out animate-out ease-in",
     },
   },
-})
+});
 const modalContentStyles = tv({
   base: [
     "max-h-full w-full rounded-t-2xl bg-overlay text-left align-middle text-overlay-fg shadow-lg ring-1 ring-fg/5",
@@ -75,18 +79,18 @@ const modalContentStyles = tv({
   defaultVariants: {
     size: "lg",
   },
-})
+});
 
 interface ModalContentProps
   extends Omit<ModalOverlayProps, "className" | "children">,
     Pick<DialogProps, "aria-label" | "aria-labelledby" | "role" | "children">,
     VariantProps<typeof modalContentStyles> {
-  closeButton?: boolean
-  isBlurred?: boolean
+  closeButton?: boolean;
+  isBlurred?: boolean;
   classNames?: {
-    overlay?: ModalOverlayProps["className"]
-    content?: ModalOverlayProps["className"]
-  }
+    overlay?: ModalOverlayProps["className"];
+    content?: ModalOverlayProps["className"];
+  };
 }
 
 const ModalContent = ({
@@ -99,28 +103,32 @@ const ModalContent = ({
   closeButton = true,
   ...props
 }: ModalContentProps) => {
-  const isDismissable = isDismissableInternal ?? role !== "alertdialog"
+  const isDismissable = isDismissableInternal ?? role !== "alertdialog";
 
   return (
     <ModalOverlay
       isDismissable={isDismissable}
-      className={composeRenderProps(classNames?.overlay, (className, renderProps) =>
-        modalOverlayStyles({
-          ...renderProps,
-          isBlurred,
-          className,
-        }),
+      className={composeRenderProps(
+        classNames?.overlay,
+        (className, renderProps) =>
+          modalOverlayStyles({
+            ...renderProps,
+            isBlurred,
+            className,
+          }),
       )}
       {...props}
     >
       <ModalPrimitive
         isDismissable={isDismissable}
-        className={composeRenderProps(classNames?.content, (className, renderProps) =>
-          modalContentStyles({
-            ...renderProps,
-            size,
-            className,
-          }),
+        className={composeRenderProps(
+          classNames?.content,
+          (className, renderProps) =>
+            modalContentStyles({
+              ...renderProps,
+              size,
+              className,
+            }),
         )}
         {...props}
       >
@@ -134,24 +142,24 @@ const ModalContent = ({
         </Dialog>
       </ModalPrimitive>
     </ModalOverlay>
-  )
-}
+  );
+};
 
-const ModalTrigger = DialogTrigger
-const ModalHeader = DialogHeader
-const ModalTitle = DialogTitle
-const ModalDescription = DialogDescription
-const ModalFooter = DialogFooter
-const ModalBody = DialogBody
-const ModalClose = DialogClose
+const ModalTrigger = DialogTrigger;
+const ModalHeader = DialogHeader;
+const ModalTitle = DialogTitle;
+const ModalDescription = DialogDescription;
+const ModalFooter = DialogFooter;
+const ModalBody = DialogBody;
+const ModalClose = DialogClose;
 
-Modal.Trigger = ModalTrigger
-Modal.Header = ModalHeader
-Modal.Title = ModalTitle
-Modal.Description = ModalDescription
-Modal.Footer = ModalFooter
-Modal.Body = ModalBody
-Modal.Close = ModalClose
-Modal.Content = ModalContent
+Modal.Trigger = ModalTrigger;
+Modal.Header = ModalHeader;
+Modal.Title = ModalTitle;
+Modal.Description = ModalDescription;
+Modal.Footer = ModalFooter;
+Modal.Body = ModalBody;
+Modal.Close = ModalClose;
+Modal.Content = ModalContent;
 
-export { Modal }
+export { Modal };

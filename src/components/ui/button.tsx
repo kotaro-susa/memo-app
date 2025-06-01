@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
 import {
   Button as ButtonPrimitive,
   type ButtonProps as ButtonPrimitiveProps,
   composeRenderProps,
-} from "react-aria-components"
-import { tv } from "tailwind-variants"
+} from "react-aria-components";
+import { tv } from "tailwind-variants";
 
 const buttonStyles = tv({
   base: [
@@ -62,16 +62,23 @@ const buttonStyles = tv({
     size: "medium",
     shape: "square",
   },
-})
+});
 
 interface ButtonProps extends ButtonPrimitiveProps {
-  intent?: "primary" | "secondary" | "danger" | "warning" | "outline" | "plain"
-  size?: "medium" | "large" | "square-petite" | "extra-small" | "small"
-  shape?: "square" | "circle"
-  ref?: React.Ref<HTMLButtonElement>
+  intent?: "primary" | "secondary" | "danger" | "warning" | "outline" | "plain";
+  size?: "medium" | "large" | "square-petite" | "extra-small" | "small";
+  shape?: "square" | "circle";
+  ref?: React.Ref<HTMLButtonElement>;
 }
 
-const Button = ({ className, intent, size, shape, ref, ...props }: ButtonProps) => {
+const Button = ({
+  className,
+  intent,
+  size,
+  shape,
+  ref,
+  ...props
+}: ButtonProps) => {
   return (
     <ButtonPrimitive
       ref={ref}
@@ -87,11 +94,15 @@ const Button = ({ className, intent, size, shape, ref, ...props }: ButtonProps) 
       )}
     >
       {(values) => (
-        <>{typeof props.children === "function" ? props.children(values) : props.children}</>
+        <>
+          {typeof props.children === "function"
+            ? props.children(values)
+            : props.children}
+        </>
       )}
     </ButtonPrimitive>
-  )
-}
+  );
+};
 
-export type { ButtonProps }
-export { Button, buttonStyles }
+export type { ButtonProps };
+export { Button, buttonStyles };

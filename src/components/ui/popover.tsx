@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
 import type {
   DialogProps,
   DialogTriggerProps,
   ModalOverlayProps,
   PopoverProps as PopoverPrimitiveProps,
-} from "react-aria-components"
+} from "react-aria-components";
 import {
   DialogTrigger as DialogTriggerPrimitive,
   Modal,
@@ -15,15 +15,15 @@ import {
   Popover as PopoverPrimitive,
   composeRenderProps,
   useSlottedContext,
-} from "react-aria-components"
-import { tv } from "tailwind-variants"
+} from "react-aria-components";
+import { tv } from "tailwind-variants";
 
 import type {
   DialogBodyProps,
   DialogFooterProps,
   DialogHeaderProps,
   DialogTitleProps,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 import {
   Dialog,
   DialogBody,
@@ -33,33 +33,41 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { useMediaQuery } from "@/hooks/use-media-query"
-import { twMerge } from "tailwind-merge"
+} from "@/components/ui/dialog";
+import { useMediaQuery } from "@/hooks/use-media-query";
+import { twMerge } from "tailwind-merge";
 
-type PopoverProps = DialogTriggerProps
+type PopoverProps = DialogTriggerProps;
 const Popover = (props: PopoverProps) => {
-  return <DialogTriggerPrimitive {...props} />
-}
+  return <DialogTriggerPrimitive {...props} />;
+};
 
 const PopoverTitle = ({ level = 2, className, ...props }: DialogTitleProps) => (
   <DialogTitle
-    className={twMerge("sm:leading-none", level === 2 && "sm:text-lg", className)}
+    className={twMerge(
+      "sm:leading-none",
+      level === 2 && "sm:text-lg",
+      className,
+    )}
     {...props}
   />
-)
+);
 
 const PopoverHeader = ({ className, ...props }: DialogHeaderProps) => (
   <DialogHeader className={twMerge("sm:p-4", className)} {...props} />
-)
+);
 
 const PopoverFooter = ({ className, ...props }: DialogFooterProps) => (
   <DialogFooter className={twMerge("sm:p-4", className)} {...props} />
-)
+);
 
 const PopoverBody = ({ className, ref, ...props }: DialogBodyProps) => (
-  <DialogBody ref={ref} className={twMerge("sm:px-4 sm:pt-0", className)} {...props} />
-)
+  <DialogBody
+    ref={ref}
+    className={twMerge("sm:px-4 sm:pt-0", className)}
+    {...props}
+  />
+);
 
 const content = tv({
   base: [
@@ -86,7 +94,7 @@ const content = tv({
       ],
     },
   },
-})
+});
 
 const drawer = tv({
   base: [
@@ -109,17 +117,17 @@ const drawer = tv({
       true: "slide-out-to-bottom-56 animate-out duration-200 ease-in",
     },
   },
-})
+});
 
 interface PopoverContentProps
   extends Omit<PopoverPrimitiveProps, "children" | "className">,
     Omit<ModalOverlayProps, "className">,
     Pick<DialogProps, "aria-label" | "aria-labelledby"> {
-  children: React.ReactNode
-  showArrow?: boolean
-  style?: React.CSSProperties
-  respectScreen?: boolean
-  className?: string | ((values: { defaultClassName?: string }) => string)
+  children: React.ReactNode;
+  showArrow?: boolean;
+  style?: React.CSSProperties;
+  respectScreen?: boolean;
+  className?: string | ((values: { defaultClassName?: string }) => string);
 }
 
 const PopoverContent = ({
@@ -129,15 +137,15 @@ const PopoverContent = ({
   className,
   ...props
 }: PopoverContentProps) => {
-  const isMobile = useMediaQuery("(max-width: 600px)")
-  const popoverContext = useSlottedContext(PopoverContext)!
-  const isMenuTrigger = popoverContext?.trigger === "MenuTrigger"
-  const isSubmenuTrigger = popoverContext?.trigger === "SubmenuTrigger"
-  const isMenu = isMenuTrigger || isSubmenuTrigger
-  const isComboBoxTrigger = popoverContext?.trigger === "ComboBox"
-  const isPicker = isComboBoxTrigger || popoverContext?.trigger === "Select"
-  const offset = showArrow ? 12 : 8
-  const effectiveOffset = isSubmenuTrigger ? offset - 5 : offset
+  const isMobile = useMediaQuery("(max-width: 600px)");
+  const popoverContext = useSlottedContext(PopoverContext)!;
+  const isMenuTrigger = popoverContext?.trigger === "MenuTrigger";
+  const isSubmenuTrigger = popoverContext?.trigger === "SubmenuTrigger";
+  const isMenu = isMenuTrigger || isSubmenuTrigger;
+  const isComboBoxTrigger = popoverContext?.trigger === "ComboBox";
+  const isPicker = isComboBoxTrigger || popoverContext?.trigger === "Select";
+  const offset = showArrow ? 12 : 8;
+  const effectiveOffset = isSubmenuTrigger ? offset - 5 : offset;
   return isMobile && respectScreen ? (
     <ModalOverlay
       className="fixed top-0 left-0 isolate z-50 h-(--visual-viewport-height) w-full bg-overlay/10 [--visual-viewport-vertical-padding:16px]"
@@ -186,21 +194,21 @@ const PopoverContent = ({
         children
       )}
     </PopoverPrimitive>
-  )
-}
+  );
+};
 
-const PopoverTrigger = DialogTrigger
-const PopoverClose = DialogClose
-const PopoverDescription = DialogDescription
+const PopoverTrigger = DialogTrigger;
+const PopoverClose = DialogClose;
+const PopoverDescription = DialogDescription;
 
-Popover.Trigger = PopoverTrigger
-Popover.Close = PopoverClose
-Popover.Description = PopoverDescription
-Popover.Content = PopoverContent
-Popover.Body = PopoverBody
-Popover.Footer = PopoverFooter
-Popover.Header = PopoverHeader
-Popover.Title = PopoverTitle
+Popover.Trigger = PopoverTrigger;
+Popover.Close = PopoverClose;
+Popover.Description = PopoverDescription;
+Popover.Content = PopoverContent;
+Popover.Body = PopoverBody;
+Popover.Footer = PopoverFooter;
+Popover.Header = PopoverHeader;
+Popover.Title = PopoverTitle;
 
-export type { PopoverProps, PopoverContentProps }
-export { Popover, PopoverContent }
+export type { PopoverProps, PopoverContentProps };
+export { Popover, PopoverContent };

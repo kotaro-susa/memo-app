@@ -30,31 +30,27 @@ export default function NoteDetail({
     }
   }, []);
 
-  const saveChanges = () => {
-    if (title !== note.title || content !== note.content) {
-      setIsSaving(true);
-
-      const updatedNote: Note = {
-        ...note,
-        title,
-        content,
-      };
-
-      onUpdate(updatedNote);
-
-      setTimeout(() => {
-        setIsSaving(false);
-      }, 500);
-    }
-  };
-
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      saveChanges();
+      if (title !== note.title || content !== note.content) {
+        setIsSaving(true);
+
+        const updatedNote: Note = {
+          ...note,
+          title,
+          content,
+        };
+
+        onUpdate(updatedNote);
+
+        setTimeout(() => {
+          setIsSaving(false);
+        }, 500);
+      }
     }, 500);
 
     return () => clearTimeout(timeoutId);
-  }, [title, content]);
+  }, [title, content, note, onUpdate]);
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);

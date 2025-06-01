@@ -1,5 +1,9 @@
-import { IconCircleCheckFill, IconCircleExclamationFill, IconCircleInfoFill } from "@intentui/icons"
-import { type VariantProps, tv } from "tailwind-variants"
+import {
+  IconCircleCheckFill,
+  IconCircleExclamationFill,
+  IconCircleInfoFill,
+} from "@intentui/icons";
+import { type VariantProps, tv } from "tailwind-variants";
 
 const noteStyles = tv({
   base: [
@@ -28,24 +32,29 @@ const noteStyles = tv({
   defaultVariants: {
     intent: "default",
   },
-})
+});
 
 interface NoteProps
   extends React.HtmlHTMLAttributes<HTMLDivElement>,
     VariantProps<typeof noteStyles> {
-  indicator?: boolean
+  indicator?: boolean;
 }
 
-const Note = ({ indicator = true, intent = "default", className, ...props }: NoteProps) => {
+const Note = ({
+  indicator = true,
+  intent = "default",
+  className,
+  ...props
+}: NoteProps) => {
   const iconMap: Record<string, React.ElementType | null> = {
     info: IconCircleInfoFill,
     warning: IconCircleExclamationFill,
     danger: IconCircleExclamationFill,
     success: IconCircleCheckFill,
     default: null,
-  }
+  };
 
-  const IconComponent = iconMap[intent] || null
+  const IconComponent = iconMap[intent] || null;
 
   return (
     <div className={noteStyles({ intent, className })} {...props}>
@@ -58,8 +67,8 @@ const Note = ({ indicator = true, intent = "default", className, ...props }: Not
         <div className="text-pretty">{props.children}</div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export type { NoteProps }
-export { Note }
+export type { NoteProps };
+export { Note };
