@@ -14,9 +14,7 @@ export function SelectCategoryComponent({
   categories,
   onSelectCategory,
 }: Props) {
-  const [selectedKey, setSelectedKey] = useState<Key>(categories[0]?.id);
-
-  // 初期マウント時に最初のカテゴリを選択
+  const [selectedKey, setSelectedKey] = useState<Key>();
   useEffect(() => {
     if (categories.length > 0) {
       setSelectedKey(categories[0].id);

@@ -29,8 +29,6 @@ export default function ProtectedUserRoute({ children }: Props) {
       router.replace("/");
       return;
     }
-
-    // 不正ユーザーのアクセス制限
     if (session.user.sub !== userId) {
       router.replace("/");
       return;

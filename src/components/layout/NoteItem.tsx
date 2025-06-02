@@ -27,7 +27,15 @@ export default function NoteItem({ note, isSelected, onClick }: NoteItemProps) {
       <p className="text-sm text-muted-foreground line-clamp-2">
         {truncatedContent || "No content"}
       </p>
-      <p className="text-xs text-muted-foreground mt-2">{note.updatedAt}</p>
+      <p className="text-xs text-muted-foreground mt-2">
+        {new Date(note.updatedAt).toLocaleString(undefined, {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+        })}
+      </p>
     </div>
   );
 }

@@ -85,7 +85,7 @@ export default function NoteList({
           <Button
             onPress={onCreateNote}
             className={`
-              flex items-center gap-1 px-4 py-2 rounded-full
+              flex items-center gap-1 px-4 py-2
               bg-primary text-primary-foreground
               hover:bg-primary/90 transition-colors
             `}
@@ -98,7 +98,7 @@ export default function NoteList({
             onPress={() => setIsOpen(true)}
             intent="outline"
             className={`
-              flex items-center gap-1 px-4 py-2 rounded-full
+              flex items-center gap-1 px-4 py-2
               bg-primary text-primary-foreground
               hover:bg-primary/90 transition-colors hover:cursor-pointer
             `}

@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { ChevronLeft, Trash2 } from "lucide-react";
+import { ChevronLeft, Loader2 } from "lucide-react";
 import { Note } from "@/lib/type";
 import { ConfirmDeleteNoteModal } from "./ConfirmDeleteNoteModal";
+import { Button } from "../ui/button";
 
 interface NoteDetailProps {
   note: Note;
@@ -34,18 +35,9 @@ export default function NoteDetail({
     const timeoutId = setTimeout(() => {
       if (title !== note.title || content !== note.content) {
         setIsSaving(true);
-
-        const updatedNote: Note = {
-          ...note,
-          title,
-          content,
-        };
-
+        const updatedNote: Note = { ...note, title, content };
         onUpdate(updatedNote);
-
-        setTimeout(() => {
-          setIsSaving(false);
-        }, 500);
+        setTimeout(() => setIsSaving(false), 500);
       }
     }, 500);
 
@@ -64,9 +56,14 @@ export default function NoteDetail({
     setIsOpen(true);
   };
 
+  const handleSave = () => {
+    const updatedNote: Note = { ...note, title, content };
+    onUpdate(updatedNote);
+  };
+
   return (
     <>
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col h-full pb-24 sm:pb-0">
         <header className="flex justify-between items-center p-5 border-b">
           <button
             onClick={onBack}
@@ -74,15 +71,13 @@ export default function NoteDetail({
           >
             <ChevronLeft size={20} />
           </button>
-
-          <div className="flex items-center space-x-2">
-            <button
-              onClick={handleDelete}
-              className="p-2 rounded-md text-destructive hover:bg-destructive/10 transition-colors"
-              aria-label="Delete note"
-            >
-              <Trash2 size={18} />
-            </button>
+          <div className="hidden sm:flex items-center space-x-2">
+            <Button onPress={handleSave} className="hover:cursor-pointer">
+              {isSaving ? <Loader2 className="animate-spin h-4 w-4" /> : "Save"}
+            </Button>
+            <Button onPress={handleDelete} className="hover:cursor-pointer">
+              Delete
+            </Button>
           </div>
         </header>
 
@@ -91,36 +86,37 @@ export default function NoteDetail({
             type="text"
             value={title}
             onChange={handleTitleChange}
-            placeholder="Title"
+            placeholder="タイトル"
             className="text-xl font-semibold mb-4 bg-transparent border-none outline-none w-full focus:ring-0"
           />
-
           <textarea
             ref={contentRef}
             value={content}
             onChange={handleContentChange}
-            placeholder="Start writing..."
+            placeholder="本文を入力..."
             className="flex-grow resize-none bg-transparent border-none outline-none w-full focus:ring-0 text-foreground"
           />
         </div>
 
-        <div className="p-4 border-t flex justify-between items-center text-sm text-muted-foreground">
-          <span>{isSaving ? "保存中..." : "保存"}</span>
+        <div className="fixed bottom-0 left-0 w-full bg-white dark:bg-gray-900 border-t sm:hidden flex justify-around p-3 z-50">
+          <Button
+            onPress={handleSave}
+            className="w-1/2 mr-2 hover:cursor-pointer"
+          >
+            {isSaving ? (
+              <Loader2 className="animate-spin h-4 w-4 mx-auto" />
+            ) : (
+              "Save"
+            )}
+          </Button>
+          <Button onPress={handleDelete} className="w-1/2">
+            Delete
+          </Button>
         </div>
       </div>
       {isOpen && (
-        <div
-          className="
-          fixed inset-0 z-50 flex items-center justify-center
-          bg-black/50 p-4 sm:p-6 md:p-8
-        "
-        >
-          <div
-            className="
-            w-full max-w-md bg-white rounded-xl shadow-xl
-            dark:bg-gray-800
-          "
-          >
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 sm:p-6 md:p-8">
+          <div className="w-full max-w-md bg-white rounded-xl shadow-xl dark:bg-gray-800">
             <ConfirmDeleteNoteModal
               onDeleteNote={onDelete}
               noteId={note.id}

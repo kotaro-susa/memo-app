@@ -1,23 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import NoteList from "./NoteList";
 import NoteDetail from "./NoteDetail";
 import { Category, Note } from "@/lib/type";
 import { v4 as uuidv4 } from "uuid";
 import userStore from "@/store/userStore";
 
-const category = [
-  { id: "1", name: "Adobe Photoshop" },
-  { id: "2", name: "Sketch" },
-  { id: "3", name: "Figma" },
-  { id: "4", name: "Adobe XD" },
-  { id: "5", name: "InVision" },
-];
+interface NoteAppProps {
+  category: Category[];
+  savedNotes: Note[];
+}
 
-export default function NoteApp() {
+export default function NoteApp({ category, savedNotes }: NoteAppProps) {
   const [notes, setNotes] = useState<Note[]>([]);
-  const [activeCategoryNotes, setActiveCategoryNotes] = useState<Note[]>([]);
   const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
   const [isDetailView, setIsDetailView] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -25,32 +21,25 @@ export default function NoteApp() {
   const { user } = userStore();
 
   useEffect(() => {
-    const savedNotes = localStorage.getItem("notes");
-    if (savedNotes) {
-      try {
-        setNotes(JSON.parse(savedNotes));
-        // 本来はAPI通信を行った後にセットする
-        setCategories(category);
-      } catch (e) {
-        console.error("Failed to parse saved notes:", e);
-      }
+    try {
+      setNotes(savedNotes);
+      setCategories(category);
+    } catch (e) {
+      console.error("Failed to parse saved notes:", e);
     }
-  }, []);
+  }, [category, savedNotes]);
 
-  useEffect(() => {
-    // API通信を行い、保存する
-    localStorage.setItem("notes", JSON.stringify(notes));
-  }, [notes]);
-
-  useEffect(() => {
-    if (!selectedCategory) return;
-    const target = notes.filter(
-      (note) => note.category.id === selectedCategory.id,
-    );
-    setActiveCategoryNotes(target);
+  const activeCategoryNotes = useMemo(() => {
+    if (!selectedCategory) return [];
+    return notes
+      .filter((note) => note.category.id === selectedCategory.id)
+      .sort(
+        (a, b) =>
+          new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+      );
   }, [selectedCategory, notes]);
 
-  const handleCreateNote = () => {
+  const handleCreateNote = async () => {
     if (!user?.sub || !selectedCategory) {
       console.error("ユーザー情報またはカテゴリがありません");
       return;
@@ -58,17 +47,38 @@ export default function NoteApp() {
 
     const newNote: Note = {
       id: uuidv4(),
-      userId: user.sub,
+      userSub: user.sub,
       title: "New Note",
       content: "",
-      category: { id: selectedCategory.id, name: selectedCategory.name },
+      category: {
+        id: selectedCategory.id,
+        name: selectedCategory.name,
+      },
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
+    const res = await fetch(`/api/note`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: newNote.id,
+        userSub: newNote.userSub,
+        title: newNote.title,
+        content: newNote.content,
+        categoryId: newNote.category.id,
+        categoryName: newNote.category.name,
+        created_at: newNote.createdAt,
+        updated_at: newNote.updatedAt,
+      }),
+    });
 
-    setNotes((prevNotes) => [newNote, ...prevNotes]);
-    setSelectedNoteId(newNote.id);
-    setIsDetailView(true);
+    if (!res.ok) {
+      console.error("カテゴリーの取得に失敗しました");
+    } else {
+      setNotes((prevNotes) => [newNote, ...prevNotes]);
+      setSelectedNoteId(newNote.id);
+      setIsDetailView(true);
+    }
   };
 
   const handleSelectNote = (noteId: string) => {
@@ -76,21 +86,55 @@ export default function NoteApp() {
     setIsDetailView(true);
   };
 
-  const handleUpdateNote = (updatedNote: Note) => {
+  const handleUpdateNote = async (updatedNote: Note) => {
+    const updatedAt = new Date().toISOString();
+    const previousNotes = [...notes];
     setNotes((prevNotes) =>
       prevNotes.map((note) =>
         note.id === updatedNote.id
-          ? { ...updatedNote, updatedAt: new Date().toISOString() }
-          : note,
-      ),
+          ? { ...updatedNote, updatedAt: updatedAt }
+          : note
+      )
     );
+    try {
+      const res = await fetch(`/api/note/${updatedNote.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: updatedNote.title,
+          content: updatedNote.content,
+          updated_at: updatedAt,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error("ノートの更新に失敗しました");
+      }
+    } catch (error) {
+      console.error(error);
+      setNotes(previousNotes);
+    }
   };
 
-  const handleDeleteNote = (noteId: string) => {
+  const handleDeleteNote = async (noteId: string) => {
+    const prevNotes = [...notes];
     setNotes((prevNotes) => prevNotes.filter((note) => note.id !== noteId));
     if (selectedNoteId === noteId) {
       setSelectedNoteId(null);
       setIsDetailView(false);
+    }
+    try {
+      const res = await fetch(`/api/note/${noteId}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!res.ok) {
+        throw new Error("ノートの削除に失敗しました");
+      }
+    } catch (error) {
+      console.error(error);
+      setNotes(prevNotes);
     }
   };
 
@@ -98,14 +142,37 @@ export default function NoteApp() {
     setIsDetailView(false);
   };
 
-  const handleCreateCategory = (category: Category) => {
+  const handleCreateCategory = async (category: Category) => {
+    const previousCategory = [...categories];
     setSelectedCategory(category);
     setCategories((prevCategories) => [category, ...prevCategories]);
+
+    try {
+      const res = await fetch(`/api/category`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: category.id,
+          userSub: user?.sub,
+          name: category.name,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error("カテゴリーの作成に失敗しました");
+      }
+    } catch (error) {
+      console.error(error);
+      setCategories(previousCategory);
+      if (selectedCategory?.id === category.id) {
+        setSelectedCategory(undefined);
+      }
+    }
   };
 
-  const selectedNote = notes.find((note) => note.id === selectedNoteId);
-
-  useEffect(() => {}, [selectedNoteId]);
+  const selectedNote = activeCategoryNotes.find(
+    (note) => note.id === selectedNoteId
+  );
 
   return (
     <div className="flex flex-col md:flex-row h-screen">

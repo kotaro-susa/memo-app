@@ -1,6 +1,6 @@
 export interface Note {
   id: string;
-  userId: string;
+  userSub: string;
   title: string;
   content: string;
   category: Category;
