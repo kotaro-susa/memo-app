@@ -6,6 +6,7 @@ import NoteDetail from "./NoteDetail";
 import { Category, Note } from "@/lib/type";
 import { v4 as uuidv4 } from "uuid";
 import userStore from "@/store/userStore";
+import { toast } from "react-hot-toast";
 
 interface NoteAppProps {
   category: Category[];
@@ -41,7 +42,7 @@ export default function NoteApp({ category, savedNotes }: NoteAppProps) {
 
   const handleCreateNote = async () => {
     if (!user?.sub || !selectedCategory) {
-      console.error("ユーザー情報またはカテゴリがありません");
+      toast.error("カテゴリを作成してからノートを作ってください");
       return;
     }
 
@@ -73,7 +74,8 @@ export default function NoteApp({ category, savedNotes }: NoteAppProps) {
     });
 
     if (!res.ok) {
-      console.error("カテゴリーの取得に失敗しました");
+      toast.error("カテゴリーの取得に失敗しました");
+      throw new Error("カテゴリーの取得に失敗しました");
     } else {
       setNotes((prevNotes) => [newNote, ...prevNotes]);
       setSelectedNoteId(newNote.id);
@@ -108,6 +110,7 @@ export default function NoteApp({ category, savedNotes }: NoteAppProps) {
       });
 
       if (!res.ok) {
+        toast.error("ノートの更新に失敗しました");
         throw new Error("ノートの更新に失敗しました");
       }
     } catch (error) {
@@ -130,6 +133,7 @@ export default function NoteApp({ category, savedNotes }: NoteAppProps) {
       });
 
       if (!res.ok) {
+        toast.error("ノートの削除に失敗しました");
         throw new Error("ノートの削除に失敗しました");
       }
     } catch (error) {
@@ -159,6 +163,7 @@ export default function NoteApp({ category, savedNotes }: NoteAppProps) {
       });
 
       if (!res.ok) {
+        toast.error("カテゴリーの作成に失敗しました");
         throw new Error("カテゴリーの作成に失敗しました");
       }
     } catch (error) {

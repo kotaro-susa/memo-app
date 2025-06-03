@@ -54,10 +54,9 @@ export default function NoteList({
 
         <div className="flex-grow overflow-y-auto py-2">
           {notes.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
-              <p>No notes yet</p>
-              <p className="text-sm">
-                Create a new note with the + button below
+            <div className="flex flex-col items-center justify-center h-full text-center">
+              <p className="text-2xl font-semibold text-primary">
+                Please create a note
               </p>
             </div>
           ) : (
